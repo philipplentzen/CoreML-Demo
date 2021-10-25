@@ -16,7 +16,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             let hotDogClassifier = try HotDogClassifier(configuration: .init())
             let hotDogModelInput = try HotDogClassifierInput(imageWith: image)
             let prediction = try hotDogClassifier.prediction(input: hotDogModelInput)
-            return prediction.classLabel
+            
+            guard let confidence = prediction.classLabelProbs[prediction.classLabel] else {
+                return "no confidence"
+            }
+            
+            return "\(prediction.classLabel): \(confidence)"
         } catch {
             return "Classification failed!😯"
         }
