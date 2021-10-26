@@ -39,8 +39,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         Sets up the initial view
      */
     func setupApp() {
-        self.title = "CoreML Demo"
-        
         let menu = UIMenu(title: "",
                           children: [
                             UIAction(title: "Choose Image...", handler: chooseImageHandler),
