@@ -17,13 +17,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             let hotDogModelInput = try HotDogClassifierInput(imageWith: image)
             let prediction = try hotDogClassifier.prediction(input: hotDogModelInput)
             
-            guard let confidence = prediction.classLabelProbs[prediction.classLabel] else {
-                return "no confidence"
-            }
-            
-            return "\(prediction.classLabel): \(confidence)"
+            return "\(prediction.classLabel)"
         } catch {
-            return "Classification failed!😯"
+            return "Classification failed!💩";
         }
     }
     
@@ -39,14 +35,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         Sets up the initial view
      */
     func setupApp() {
+        // Prepare menu
         let menu = UIMenu(title: "",
                           children: [
-                            UIAction(title: "Choose Image...", handler: chooseImageHandler),
-                            UIAction(title: "Take Image...", handler: takeImageHandler),
+                            UIAction(title: "Choose Image...", image: UIImage(systemName: "photo.fill.on.rectangle.fill"), handler: chooseImageHandler),
+                            UIAction(title: "Take Image...", image: UIImage(systemName: "camera"), handler: takeImageHandler),
                           ])
+        let menuButton = UIBarButtonItem(image: UIImage(systemName: "camera.on.rectangle"),
+                                         menu: menu)
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .camera,
-                                                            menu: menu)
+        // Add menu button to navigation
+        navigationItem.rightBarButtonItem = menuButton
     }
 
     /**
@@ -54,7 +53,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
      */
     func chooseImageHandler(action: UIAction) {
         let picker = UIImagePickerController()
+        // Set the delegate to self, imagePickerController will be called
         picker.delegate = self
+        // Use Album for image selection
         picker.sourceType = .savedPhotosAlbum
         present(picker, animated: true)
     }
@@ -64,26 +65,68 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
      */
     func takeImageHandler(action: UIAction) {
         let picker = UIImagePickerController()
+        // Set the delegate to self, imagePickerController will be called
         picker.delegate = self
+        // Use camera to take a new image
         picker.sourceType = .camera
         picker.cameraCaptureMode = .photo
         present(picker, animated: true)
     }
     
     /**
-        Handles receiving image and starts classification
+     Handles the user image selection
      */
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
-        imageCaption.text = "Analyzing image... 🔍"
+        // Tell the user the image is classified
+        self.setImageCaptionText("classifying image... 🔍")
         
+        // Presents the selected image to the user
+        let uiImage = self.getUIImageFromInfo(info)
+        imageView.image = uiImage
+        
+        // Prepares the selected image for classification
+        let cgImage = self.convertToCgImage(uiImage);
+        
+        // Classificate image
+        let result = self.handleClassification(image: cgImage)
+        
+        // Present classification result to the user
+        self.setImageCaptionText(result)
+    }
+    
+    /**
+     Get UIImage from Image Picker Control info
+     */
+    func getUIImageFromInfo(_ info: [UIImagePickerController.InfoKey : Any]) -> UIImage {
         guard let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
             else { fatalError("no image from picker") }
+        
+        return uiImage
+    }
+    
+    /**
+     Converts an UIImage to a CGImage
+     */
+    func convertToCgImage(_ uiImage: UIImage) -> CGImage {
         guard let cgImage = uiImage.cgImage
             else { fatalError("can't create CIImage from UIImage") }
-
-        imageView.image = uiImage
-        imageCaption.text = self.handleClassification(image: cgImage)
+        
+        return cgImage;
+    }
+    
+    /**
+     Sets the text of imageCaption Label based on the classification result
+     */
+    func setImageCaptionText(_ result: String) {
+        switch result {
+        case "hotdog":
+            imageCaption.text = "This is a 🌭"
+        case "nothotdog":
+            imageCaption.text = "This is not a 🌭"
+        default:
+            imageCaption.text = result
+        }
     }
 }
 
