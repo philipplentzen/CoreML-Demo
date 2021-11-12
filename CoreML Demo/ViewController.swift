@@ -10,29 +10,37 @@ import CoreML
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    
+    /**
+     Handles the classification and returns the result
+     */
     func handleClassification(image: CGImage) -> String {
-        do {
-            let hotDogClassifier = try HotDogClassifier(configuration: .init())
-            let hotDogModelInput = try HotDogClassifierInput(imageWith: image)
-            let prediction = try hotDogClassifier.prediction(input: hotDogModelInput)
-            
-            return "\(prediction.classLabel)"
-        } catch {
-            return "Classification failed!💩";
-        }
+        return "I don't know???🤔"
     }
     
+    /**
+     Outlets
+     */
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var imageCaption: UILabel!
-
+    
+    /**
+     Override viewDidLoad
+     */
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupApp()
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
     /**
-        Sets up the initial view
+     Sets up the initial view
      */
     func setupApp() {
         // Prepare menu
