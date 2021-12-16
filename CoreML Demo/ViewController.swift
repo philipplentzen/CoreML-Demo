@@ -99,6 +99,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             
             // Present classification result to the user
             self.setImageCaptionText(result)
+            return;
         }
         self.setImageCaptionText("Converting failed!")
     }
