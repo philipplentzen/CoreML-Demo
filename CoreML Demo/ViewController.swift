@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  CoreML Demo
 //
-//  Created by Philipp Lentzen on 23.10.21.
+//  Created by Core ML Group.
 //
 
 import UIKit
@@ -10,29 +10,34 @@ import CoreML
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    
-    func handleClassification(image: CGImage) -> String {
+    // MARK: Using CORE ML
+    /**
+     Classifies the given image
+     
+     - returns: Prediction as a string
+     */
+    func getPrediction(image: CVPixelBuffer) -> String {
         do {
-            let hotDogClassifier = try HotDogClassifier(configuration: .init())
-            let hotDogModelInput = try HotDogClassifierInput(imageWith: image)
-            let prediction = try hotDogClassifier.prediction(input: hotDogModelInput)
-            
+            let hotdogModel = try HotDogClassifier(configuration: .init());
+            let prediction = try hotdogModel.prediction(image: image)
             return "\(prediction.classLabel)"
         } catch {
             return "Classification failed!💩";
         }
     }
     
+    // MARK: Outlets
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var imageCaption: UILabel!
-
+    
+    // MARK: UI Setup
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupApp()
     }
     
     /**
-        Sets up the initial view
+    Sets up the initial view
      */
     func setupApp() {
         // Prepare menu
@@ -48,8 +53,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         navigationItem.rightBarButtonItem = menuButton
     }
 
+    // MARK: Additional Views
     /**
-        Starts the savedPhotos view
+    Starts the savedPhotos view
      */
     func chooseImageHandler(action: UIAction) {
         let picker = UIImagePickerController()
@@ -61,7 +67,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     /**
-        Starts the camera view
+    Starts the camera view
      */
     func takeImageHandler(action: UIAction) {
         let picker = UIImagePickerController()
@@ -73,30 +79,33 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         present(picker, animated: true)
     }
     
+    // MARK: Handling image input
     /**
      Handles the user image selection
      */
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
         // Tell the user the image is classified
-        self.setImageCaptionText("classifying image... 🔍")
+        self.setImageCaptionText("Classifying image... 🔍")
         
         // Presents the selected image to the user
         let uiImage = self.getUIImageFromInfo(info)
         imageView.image = uiImage
         
-        // Prepares the selected image for classification
-        let cgImage = self.convertToCgImage(uiImage);
-        
-        // Classificate image
-        let result = self.handleClassification(image: cgImage)
-        
-        // Present classification result to the user
-        self.setImageCaptionText(result)
+        // Convert uiImage to CVPixelBuffer for classifier
+        if let cvPixelBuffer = uiImage.toCVPixelBuffer() {
+            // Classificate image
+            let result = self.getPrediction(image: cvPixelBuffer)
+            
+            // Present classification result to the user
+            self.setImageCaptionText(result)
+        }
+        self.setImageCaptionText("Converting failed!")
     }
     
     /**
-     Get UIImage from Image Picker Control info
+     Picks UIImage from Image Picker Control info
+     - returns: UIImage from Image Picker Control info
      */
     func getUIImageFromInfo(_ info: [UIImagePickerController.InfoKey : Any]) -> UIImage {
         guard let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
@@ -105,15 +114,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         return uiImage
     }
     
-    /**
-     Converts an UIImage to a CGImage
-     */
-    func convertToCgImage(_ uiImage: UIImage) -> CGImage {
-        guard let cgImage = uiImage.cgImage
-            else { fatalError("can't create CIImage from UIImage") }
-        
-        return cgImage;
-    }
+    // MARK: Set prediction result
     
     /**
      Sets the text of imageCaption Label based on the classification result
@@ -130,3 +131,41 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 }
 
+
+// MARK: Extend UIImage
+extension UIImage {
+    /**
+     Converts an UIImage to CVPixelBuffer or nil
+     
+    - returns: The image as CVPixelBuffer
+     - see: https://gist.github.com/francoismarceau29/abac55c22f6e440800d1d73d72bf2225
+     */
+    func toCVPixelBuffer() -> CVPixelBuffer? {
+        let attrs = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue, kCVPixelBufferCGBitmapContextCompatibilityKey: kCFBooleanTrue] as CFDictionary
+        var pixelBuffer : CVPixelBuffer?
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, Int(self.size.width), Int(self.size.height), kCVPixelFormatType_32ARGB, attrs, &pixelBuffer)
+        guard status == kCVReturnSuccess else {
+            return nil
+        }
+
+        if let pixelBuffer = pixelBuffer {
+            CVPixelBufferLockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+            let pixelData = CVPixelBufferGetBaseAddress(pixelBuffer)
+
+            let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+            let context = CGContext(data: pixelData, width: Int(self.size.width), height: Int(self.size.height), bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(pixelBuffer), space: rgbColorSpace, bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue)
+
+            context?.translateBy(x: 0, y: self.size.height)
+            context?.scaleBy(x: 1.0, y: -1.0)
+
+            UIGraphicsPushContext(context!)
+            self.draw(in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height))
+            UIGraphicsPopContext()
+            CVPixelBufferUnlockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+
+            return pixelBuffer
+        }
+
+        return nil
+    }
+}
