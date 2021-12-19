@@ -18,7 +18,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
      */
     func getPrediction(image: CVPixelBuffer) -> String {
         do {
-            let hotdogModel = try HotDogClassifier(configuration: .init());
+            let fastFoodModel = try FastFoodModel(configuration: .init());
             let prediction = try hotdogModel.prediction(image: image)
             return "\(prediction.classLabel)"
         } catch {
