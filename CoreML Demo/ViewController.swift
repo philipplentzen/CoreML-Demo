@@ -19,7 +19,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func getPrediction(image: CVPixelBuffer) -> String {
         do {
             let fastFoodModel = try FastFoodModel(configuration: .init());
-            let prediction = try hotdogModel.prediction(image: image)
+            let prediction = try fastFoodModel.prediction(image: image)
             return "\(prediction.classLabel)"
         } catch {
             return "Classification failed!💩";
