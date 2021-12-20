@@ -20,7 +20,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         do {
             let fastFoodModel = try FastFoodModel(configuration: .init())
             let prediction = try fastFoodModel.prediction(image: image)
-            return "\(prediction.classLabel)"
+            return prediction.classLabel;
         } catch {
             return "Classification failed!💩"
         }
@@ -46,6 +46,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                             UIAction(title: "Choose Image...", image: UIImage(systemName: "photo.fill.on.rectangle.fill"), handler: chooseImageHandler),
                             UIAction(title: "Take Image...", image: UIImage(systemName: "camera"), handler: takeImageHandler),
                           ])
+        // Add menu to navigation button
         let menuButton = UIBarButtonItem(image: UIImage(systemName: "camera.on.rectangle"),
                                          menu: menu)
         

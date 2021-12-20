@@ -2,7 +2,7 @@
 //  SceneDelegate.swift
 //  CoreML Demo
 //
-//  Created by Philipp Lentzen on 23.10.21.
+//  Created by Core ML Group.
 //
 
 import UIKit

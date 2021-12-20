@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		70121B0C2726F2BC00CA0145 /* HotDogClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 70121B0B2726F2BC00CA0145 /* HotDogClassifier.mlmodel */; };
+		70C397142770AC5300B00CDC /* FastFoodModel.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 70C397132770AC5300B00CDC /* FastFoodModel.mlmodel */; };
 		70FCB005272463CD00D0D63F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70FCB004272463CD00D0D63F /* AppDelegate.swift */; };
 		70FCB007272463CD00D0D63F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70FCB006272463CD00D0D63F /* SceneDelegate.swift */; };
 		70FCB009272463CD00D0D63F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70FCB008272463CD00D0D63F /* ViewController.swift */; };
@@ -17,8 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		70121B0B2726F2BC00CA0145 /* HotDogClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = HotDogClassifier.mlmodel; path = "../../../OneDrive - rwth-aachen.de/UNI/5. Semester/iOS/HotDogClassifier.mlmodel"; sourceTree = "<group>"; };
 		709B724827247AE1009FE235 /* CoreML Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "CoreML Demo.entitlements"; sourceTree = "<group>"; };
+		70C397132770AC5300B00CDC /* FastFoodModel.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = FastFoodModel.mlmodel; path = "../../../OneDrive - rwth-aachen.de/UNI/5. Semester/iOS/FastFoodModel.mlmodel"; sourceTree = "<group>"; };
 		70FCB001272463CD00D0D63F /* CoreML Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CoreML Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70FCB004272463CD00D0D63F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		70FCB006272463CD00D0D63F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -59,7 +59,6 @@
 		70FCB003272463CD00D0D63F /* CoreML Demo */ = {
 			isa = PBXGroup;
 			children = (
-				70121B0B2726F2BC00CA0145 /* HotDogClassifier.mlmodel */,
 				709B724827247AE1009FE235 /* CoreML Demo.entitlements */,
 				70FCB004272463CD00D0D63F /* AppDelegate.swift */,
 				70FCB006272463CD00D0D63F /* SceneDelegate.swift */,
@@ -68,6 +67,7 @@
 				70FCB00D272463CE00D0D63F /* Assets.xcassets */,
 				70FCB00F272463CE00D0D63F /* LaunchScreen.storyboard */,
 				70FCB012272463CE00D0D63F /* Info.plist */,
+				70C397132770AC5300B00CDC /* FastFoodModel.mlmodel */,
 			);
 			path = "CoreML Demo";
 			sourceTree = "<group>";
@@ -143,9 +143,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70C397142770AC5300B00CDC /* FastFoodModel.mlmodel in Sources */,
 				70FCB009272463CD00D0D63F /* ViewController.swift in Sources */,
 				70FCB005272463CD00D0D63F /* AppDelegate.swift in Sources */,
-				70121B0C2726F2BC00CA0145 /* HotDogClassifier.mlmodel in Sources */,
 				70FCB007272463CD00D0D63F /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
